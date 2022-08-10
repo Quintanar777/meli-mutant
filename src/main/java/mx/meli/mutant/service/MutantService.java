@@ -1,8 +1,7 @@
 package mx.meli.mutant.service;
 
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.regex.Pattern;
+import mx.meli.mutant.util.MutantUtil;
 
 @Slf4j
 public class MutantService {
@@ -13,45 +12,20 @@ public class MutantService {
         boolean isMutant = false;
         //buscar mutante en lineas de forma horizontal
         for (String line : adn) {
-            if (containsANDMutant(line)) {
+            if (MutantUtil.adnLineIsMutant(line)) {
                 return true;
             }
         }
         //buscar mutante en lineas de forma vertical
         for (int column = 0; column < adn[0].length(); column++) {
-            if (containsANDMutant(getLineVertical(adn, column))) {
+            if (MutantUtil.adnLineIsMutant(MutantUtil.getLineVertical(adn, column))) {
                 return true;
             }
         }
+        //buscar mutante en lineas de forma obliqua
+
         return isMutant;
     }
 
-    private String getLineVertical(String[] adn, int column) {
-        StringBuilder line = new StringBuilder();
-        for (int row = 0; row < adn.length; row++) {
-            line.append(adn[row].charAt(column));
-        }
-        return line.toString();
-    }
 
-    private static boolean containsANDMutant(String line) {
-        log.debug("line: {}", line);
-        Pattern pat = Pattern.compile(".*AAAA.*");
-        if (pat.matcher(line).matches()) {
-            return true;
-        }
-        pat = Pattern.compile(".*TTTT.*");
-        if (pat.matcher(line).matches()) {
-            return true;
-        }
-        pat = Pattern.compile(".*CCCC.*");
-        if (pat.matcher(line).matches()) {
-            return true;
-        }
-        pat = Pattern.compile(".*GGGG.*");
-        if (pat.matcher(line).matches()) {
-            return true;
-        }
-        return false;
-    }
 }
