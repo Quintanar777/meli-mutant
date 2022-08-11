@@ -2,6 +2,8 @@ package mx.meli.mutant.util;
 
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class MutantUtilTest {
@@ -46,5 +48,21 @@ public class MutantUtilTest {
         String[] array = {"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCAC"};
         String lineZero = MutantUtil.getLineVertical(array, 5);
         assertEquals("ACTGA", lineZero);
+    }
+
+    @Test
+    public void getArrayLinesObliqua() {
+        String[] adn = {"ATGCGA", "CAGTGC", "TTATGT", "AGAAGG", "CCCCTA", "TCACTG"};
+        List<String> arrayLinesObliqua = MutantUtil.getArrayLinesObliqua(adn);
+        assertNotNull(arrayLinesObliqua);
+        assertEquals(5, arrayLinesObliqua.size());
+        //valida la linea diagonal
+        assertTrue(arrayLinesObliqua.stream().anyMatch(s -> s.equals("AAAATG")));
+        //valida las lineas arriba de la diagonal
+        assertTrue(arrayLinesObliqua.stream().anyMatch(s -> s.equals("TGTGA")));
+        assertTrue(arrayLinesObliqua.stream().anyMatch(s -> s.equals("GTGG")));
+        //valida las lineas abajo de la diagonal
+        assertTrue(arrayLinesObliqua.stream().anyMatch(s -> s.equals("CTACT")));
+        assertTrue(arrayLinesObliqua.stream().anyMatch(s -> s.equals("TGCC")));
     }
 }
