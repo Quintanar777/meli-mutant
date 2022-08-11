@@ -6,7 +6,7 @@ import mx.meli.mutant.util.MutantUtil;
 import java.util.List;
 
 @Slf4j
-public class MutantService {
+public class MutantManager {
 
     private static final int MIN_SEC_MUTANT = 2;
 
