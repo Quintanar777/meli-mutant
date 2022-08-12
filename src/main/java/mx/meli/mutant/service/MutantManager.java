@@ -1,7 +1,9 @@
 package mx.meli.mutant.service;
 
 import lombok.extern.slf4j.Slf4j;
+import mx.meli.mutant.exception.MutanManagerException;
 import mx.meli.mutant.util.MutantUtil;
+import mx.meli.mutant.validation.MutantManagerValidation;
 
 import java.util.List;
 
@@ -13,28 +15,32 @@ public class MutantManager {
     /**
      * Dado un array, valida si es un mutante
      */
-    public boolean isMutant(String[] adn) {
+    public boolean isMutant(String[] adn) throws MutanManagerException {
+        MutantManagerValidation.validADN(adn);
         boolean isMutant = false;
         short countSec = 0;
 
-        short countSecHorizontal = getCountSecHorizontal(adn);
-        countSec += countSecHorizontal;
-        if (countSec >= MIN_SEC_MUTANT) {
-            return true;
-        }
+        try {
+            short countSecHorizontal = getCountSecHorizontal(adn);
+            countSec += countSecHorizontal;
+            if (countSec >= MIN_SEC_MUTANT) {
+                return true;
+            }
 
-        short countSecVertical = getCountSecVertical(adn);
-        countSec += countSecVertical;
-        if (countSec >= MIN_SEC_MUTANT) {
-            return true;
+            short countSecVertical = getCountSecVertical(adn);
+            countSec += countSecVertical;
+            if (countSec >= MIN_SEC_MUTANT) {
+                return true;
+            }
+            short countSecObliqua = getCountSecObliqua(adn);
+            countSec += countSecObliqua;
+            if (countSec >= MIN_SEC_MUTANT) {
+                return true;
+            }
+            return isMutant;
+        } catch (RuntimeException exception) {
+            throw new MutanManagerException(String.format("An error occurred when validating, message: %s", exception.getMessage()), exception);
         }
-        short countSecObliqua = getCountSecObliqua(adn);
-        countSec += countSecObliqua;
-        if (countSec >= MIN_SEC_MUTANT) {
-            return true;
-        }
-
-        return isMutant;
     }
 
     /**
